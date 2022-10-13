@@ -68,7 +68,7 @@ for ($i = 0; $i <= strlen($fraseRandom); $i++) {
 }
 
 // Función que indica según los fallos, el estado de la partida.
-function checkFallos()
+function checkInfo()
 {
     global $fallos, $fraseRandom, $fraseUsuario;
 
@@ -194,7 +194,7 @@ function adivinarFrase($supuestaFrase): bool
 
 do {
     global $fraseRandom, $fallos, $ganador;
-    checkFallos();
+    checkInfo();
 
     // Pedimos al usuario la letra.
     $respuestaUsuario = readline("Letra: ");
@@ -235,7 +235,7 @@ do {
             $letrasAcertadas += $count;
             echo "Hay " . $count . ". Acertadas: " . $letrasAcertadas . "\n";
 
-            checkFallos();
+            checkInfo();
 
             // Si ha adivinado todas las letras de la frase, gana.
             if ($letrasAcertadas == count($arrayFraseRandom)) {
@@ -275,7 +275,7 @@ do {
 
         // Comprueba los fallos.
         if ($fallos == 6) {
-            checkFallos();
+            checkInfo();
             echo "Has perdido :(\nLa frase era: " . $fraseRandom;
             break;
             // Si las letras que ha encontrado el usuario coinciden con las letras de la frase, ha ganado.

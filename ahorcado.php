@@ -18,6 +18,9 @@ $frases = [
     "Rio Segura"
 ];
 
+/********************************************
+ * Este board contiene el estado de la partida.
+ */
 $board = array(
     0 => <<<_END
             ____
@@ -84,7 +87,9 @@ $board = array(
         _END
 );
 
-
+/************************************************************
+ * Obtenemos la frase aleatoria y la convertimos a un array.
+ */
 function getFraseRandom($frases): array
 {
     // Elegimos aleatoriamente una frase del array.
@@ -98,7 +103,9 @@ function getFraseRandom($frases): array
 }
 
 
-// Función para adivinar la frase.
+/*************************************************************
+ * Procedemos a mostrar al usuario si quiere adivinar la frase.
+ */
 function adivinarFrase($supuestaFrase): bool
 {
     $b = true;
@@ -114,6 +121,33 @@ function adivinarFrase($supuestaFrase): bool
     } else if ($quieresAdivinar == "n") {
         $b = false;
     }
+
+    return $b;
+}
+
+function comprobarLetra($respuestaUsuario): bool
+{
+    $b = true;
+
+    if (
+        !is_numeric($respuestaUsuario)
+        && is_string($respuestaUsuario)
+        && !preg_match('/[\'^£$%&*()}{@#~?><>,|=_+¬-]/', $respuestaUsuario)
+        && $respuestaUsuario != "/"
+        && strlen($respuestaUsuario) == 1
+        && $respuestaUsuario != null && $respuestaUsuario != " "
+    ) {
+        $b = true;
+    } else {
+        $b = false;
+    }
+
+    return $b;
+}
+
+function Letra($respuestaUsuario): bool
+{
+    $b = true;
 
     return $b;
 }

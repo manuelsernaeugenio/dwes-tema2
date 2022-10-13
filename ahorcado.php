@@ -18,13 +18,9 @@ $frases = [
     "Rio Segura"
 ];
 
-/*******************************************************************************
- * Genera una frase random y le quita los acentos, la convierte en minúsculas etc.
- */
 function getFraseRandom(): array
 {
     global $frases;
-
     // Elegimos aleatoriamente una frase del array.
     $random = rand(0, count($frases) - 1);
     $fraseRandom = $frases[$random];
@@ -56,9 +52,8 @@ function getFraseRandom(): array
     return $arrayFraseRandom;
 }
 
-
 // Función que indica según los fallos, el estado de la partida.
-function checkFallos()
+function checkInfo()
 {
     global $fallos, $fraseRandom, $fraseUsuario;
 
@@ -146,6 +141,7 @@ function checkFallos()
 
     for ($i = 0; $i < count($frase); $i++) {
         if ($fraseUsuario[$i] != null) {
+            /* if ($fraseUsuario[$key] == $frase[$key]) { */
             if ($fraseUsuario[$i] != $frase[$i] && $frase[$i] != " ") {
                 echo "_";
             } else if ($frase[$i] == " ") {
@@ -157,13 +153,10 @@ function checkFallos()
             echo "_";
         }
     }
-
     echo "\n\n";
 }
 
-/***************************************
- * Función que sirve para adivinar la frase y devolver un booleano.
- */
+// Función para adivinar la frase.
 function adivinarFrase($supuestaFrase): bool
 {
     $b = true;
@@ -178,8 +171,6 @@ function adivinarFrase($supuestaFrase): bool
     return $b;
 }
 
-// Declaramos la variable que indica si ha ganado o no.
-$ganador = false;
 
 // Fallos realizados por el usuario.
 $fallos = 0;
@@ -191,15 +182,13 @@ $letrasAcertadas = 0;
 // Este array lo formará el usuario con las letras que haya adivinado.
 $fraseUsuario = array();
 
-$arrayFraseRandom = getFraseRandom();
-
 for ($i = 0; $i <= strlen($fraseRandom); $i++) {
     $fraseUsuario[$i] = $i;
 }
 
 do {
     global $fraseRandom, $fallos, $ganador;
-    checkFallos();
+    checkInfo();
 
     // Pedimos al usuario la letra.
     $respuestaUsuario = readline("Letra: ");
@@ -240,7 +229,7 @@ do {
             $letrasAcertadas += $count;
             echo "Hay " . $count . ". Acertadas: " . $letrasAcertadas . "\n";
 
-            checkFallos();
+            checkInfo();
 
             // Si ha adivinado todas las letras de la frase, gana.
             if ($letrasAcertadas == count($arrayFraseRandom)) {
@@ -280,7 +269,7 @@ do {
 
         // Comprueba los fallos.
         if ($fallos == 6) {
-            checkFallos();
+            checkInfo();
             echo "Has perdido :(\nLa frase era: " . $fraseRandom;
             break;
             // Si las letras que ha encontrado el usuario coinciden con las letras de la frase, ha ganado.

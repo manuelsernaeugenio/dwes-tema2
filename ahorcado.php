@@ -191,6 +191,8 @@ $letrasAcertadas = 0;
 // Este array lo formará el usuario con las letras que haya adivinado.
 $fraseUsuario = array();
 
+$arrayFraseRandom = getFraseRandom();
+
 for ($i = 0; $i <= strlen($fraseRandom); $i++) {
     $fraseUsuario[$i] = $i;
 }
@@ -219,7 +221,7 @@ do {
         // Si el usuario ha acertado la letra, lo añade al contador.
         // Este lo usaremos para revisar los fallos, aciertos o si tiene que añadirse
         // al array de letras correctas.
-        foreach (getFraseRandom() as $key => $valor) {
+        foreach ($arrayFraseRandom as $key => $valor) {
             if ($respuestaUsuario ==  $valor && !in_array($respuestaUsuario, $fraseUsuario)) {
                 $count++;
             }
@@ -229,7 +231,7 @@ do {
         // si no está, la añade al array que forma el usuario y si está ya la letra, te suma un fallo.
         if ($count > 0 && !in_array($respuestaUsuario, $fraseUsuario)) {
 
-            foreach (getFraseRandom() as $key => $valor) {
+            foreach ($arrayFraseRandom as $key => $valor) {
                 if ($respuestaUsuario ==  $valor) {
                     $fraseUsuario[$key] = $respuestaUsuario;
                 }
@@ -241,7 +243,7 @@ do {
             checkFallos();
 
             // Si ha adivinado todas las letras de la frase, gana.
-            if ($letrasAcertadas == count(getFraseRandom())) {
+            if ($letrasAcertadas == count($arrayFraseRandom)) {
                 $ganador = true;
                 // Si aun no la ha adivinado, le pregunta al usuario si quiere adivinar. 
             } else {

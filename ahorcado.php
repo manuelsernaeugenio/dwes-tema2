@@ -276,7 +276,7 @@ do {
         // Comprueba los fallos.
         if ($fallos == 6) {
             checkInfo();
-            echo "Has perdido :(\nLa frase era: " . $fraseRandom;
+            echo "Has perdido :(\nLa frase era: " . $frases[$random];
             break;
             // Si las letras que ha encontrado el usuario coinciden con las letras de la frase, ha ganado.
         }

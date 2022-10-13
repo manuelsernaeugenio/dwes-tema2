@@ -18,9 +18,6 @@ $frases = [
     "Rio Segura"
 ];
 
-
-
-
 /*******************************************************************************
  * Genera una frase random y le quita los acentos, la convierte en minúsculas etc.
  */
@@ -58,7 +55,6 @@ function getFraseRandom(): array
 
     return $arrayFraseRandom;
 }
-
 
 
 // Función que indica según los fallos, el estado de la partida.
@@ -150,7 +146,6 @@ function checkFallos()
 
     for ($i = 0; $i < count($frase); $i++) {
         if ($fraseUsuario[$i] != null) {
-            /* if ($fraseUsuario[$key] == $frase[$key]) { */
             if ($fraseUsuario[$i] != $frase[$i] && $frase[$i] != " ") {
                 echo "_";
             } else if ($frase[$i] == " ") {
@@ -234,7 +229,7 @@ do {
         // si no está, la añade al array que forma el usuario y si está ya la letra, te suma un fallo.
         if ($count > 0 && !in_array($respuestaUsuario, $fraseUsuario)) {
 
-            foreach ($arrayFraseRandom as $key => $valor) {
+            foreach (getFraseRandom() as $key => $valor) {
                 if ($respuestaUsuario ==  $valor) {
                     $fraseUsuario[$key] = $respuestaUsuario;
                 }
@@ -246,7 +241,7 @@ do {
             checkFallos();
 
             // Si ha adivinado todas las letras de la frase, gana.
-            if ($letrasAcertadas == count($arrayFraseRandom)) {
+            if ($letrasAcertadas == count(getFraseRandom())) {
                 $ganador = true;
                 // Si aun no la ha adivinado, le pregunta al usuario si quiere adivinar. 
             } else {

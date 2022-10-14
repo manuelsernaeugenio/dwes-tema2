@@ -29,29 +29,7 @@ $ganador = false;
 $random = rand(0, count($frases) - 1);
 $fraseRandom = $frases[$random];
 
-// Pasamos la frase a minúsculas.
-$fraseRandom = mb_strtolower($fraseRandom, "UTF-8");
-
-// Quitamos los acentos de la frase.
-$buscar = ["á", "é", "í", "ó", "ú"];
-$reemplazar = ["a", "e", "i", "o", "u"];
-
-$fraseRandom = str_replace($buscar, $reemplazar, $fraseRandom, $cambios);
-
-// Convertimos la frase array y obtenemos las letras.
-$arrayFraseRandom = mb_str_split($fraseRandom, 1, "UTF-8");
-
-// Reemplazamos los espacios por nulos ya que no cuentan como letras para luego hacer el checkeo.
-$arrayFraseRandom = array_replace(
-    $arrayFraseRandom,
-    array_fill_keys(
-        array_keys($arrayFraseRandom, " "),
-        null
-    )
-);
-
-// Eliminamos los nulos.
-$arrayFraseRandom = array_filter($arrayFraseRandom);
+$arrayFraseRandom = arrayFraseRandom($fraseRandom);
 
 // Fallos realizados por el usuario.
 $fallos = 0;
@@ -67,8 +45,44 @@ for ($i = 0; $i <= strlen($fraseRandom); $i++) {
     $fraseUsuario[$i] = $i;
 }
 
-// Función que indica según los fallos, el estado de la partida.
-function checkFallos()
+/***************************************************************
+ * Genera un array con cada letra de la frase. Aparte, la filtra
+ * y quita todos los acentos, mayúsculas etc. Esta frase la usaremos
+ * luego para comprobar si es la misma que el usuario teclea.
+ */
+function arrayFraseRandom($fraseRandom): array
+{
+    // Pasamos la frase a minúsculas.
+    $fraseRandom = mb_strtolower($fraseRandom, "UTF-8");
+
+    // Quitamos los acentos de la frase.
+    $buscar = ["á", "é", "í", "ó", "ú"];
+    $reemplazar = ["a", "e", "i", "o", "u"];
+
+    $fraseRandom = str_replace($buscar, $reemplazar, $fraseRandom, $cambios);
+
+    // Convertimos la frase array y obtenemos las letras.
+    $arrayFraseRandom = mb_str_split($fraseRandom, 1, "UTF-8");
+
+    // Reemplazamos los espacios por nulos ya que no cuentan como letras para luego hacer el checkeo.
+    $arrayFraseRandom = array_replace(
+        $arrayFraseRandom,
+        array_fill_keys(
+            array_keys($arrayFraseRandom, " "),
+            null
+        )
+    );
+
+    // Eliminamos los nulos.
+    $arrayFraseRandom = array_filter($arrayFraseRandom);
+
+    return $arrayFraseRandom;
+}
+
+/*********************************************************+
+ * Comprueba el tablero y muestra el estado de la partida.
+ */
+function checkInfo()
 {
     global $fallos, $fraseRandom, $fraseUsuario;
 
@@ -154,13 +168,9 @@ function checkFallos()
 
     $frase = mb_str_split($fraseRandom, 1, "UTF-8");
 
-    // echo "$fraseRandom \n";
-    // echo count($frase) . "\n";
-    // Printea en pantalla la frase oculta.
-
+    // Muestra la frase enmascarada.
     for ($i = 0; $i < count($frase); $i++) {
         if ($fraseUsuario[$i] != null) {
-            /* if ($fraseUsuario[$key] == $frase[$key]) { */
             if ($fraseUsuario[$i] != $frase[$i] && $frase[$i] != " ") {
                 echo "_";
             } else if ($frase[$i] == " ") {
@@ -176,7 +186,9 @@ function checkFallos()
     echo "\n\n";
 }
 
-// Función para adivinar la frase.
+/**********************************************
+ * Comprueba si ha adivinado la frase.
+ */
 function adivinarFrase($supuestaFrase): bool
 {
     $b = true;
@@ -191,19 +203,13 @@ function adivinarFrase($supuestaFrase): bool
     return $b;
 }
 
+/***********************************************************
+ * Comprueba que la respuesta del usuario esté bien escrita
+ */
+function comprobarRespuesta($respuestaUsuario): bool
+{
+    $b = true;
 
-do {
-    global $fraseRandom, $fallos, $ganador;
-    checkFallos();
-
-    // Pedimos al usuario la letra.
-    $respuestaUsuario = readline("Letra: ");
-    $respuestaUsuario = mb_strtolower($respuestaUsuario, "UTF-8");
-
-    $count = 0; // contador de letras encontradas.
-    $fallosActuales = 0; // fallos que ha tenido en la ronda.
-
-    // También filtraremos los datos para que no hayan errores a la hora de escribir la letra.
     if (
         !is_numeric($respuestaUsuario)
         && is_string($respuestaUsuario)
@@ -212,6 +218,25 @@ do {
         && strlen($respuestaUsuario) == 1
         && $respuestaUsuario != null && $respuestaUsuario != " "
     ) {
+        $b = true;
+    } else {
+        $b = false;
+    }
+
+    return $b;
+}
+
+do {
+    checkInfo();
+
+    // Pedimos al usuario la letra.
+    $respuestaUsuario = readline("Letra: ");
+    $respuestaUsuario = mb_strtolower($respuestaUsuario, "UTF-8");
+
+    $count = 0; // contador de letras encontradas.
+    $fallosActuales = 0; // fallos que ha tenido en la ronda.
+
+    if (comprobarRespuesta($respuestaUsuario)) {
 
         // Si el usuario ha acertado la letra, lo añade al contador.
         // Este lo usaremos para revisar los fallos, aciertos o si tiene que añadirse
@@ -235,7 +260,7 @@ do {
             $letrasAcertadas += $count;
             echo "Hay " . $count . ". Acertadas: " . $letrasAcertadas . "\n";
 
-            checkFallos();
+            checkInfo();
 
             // Si ha adivinado todas las letras de la frase, gana.
             if ($letrasAcertadas == count($arrayFraseRandom)) {
@@ -275,7 +300,7 @@ do {
 
         // Comprueba los fallos.
         if ($fallos == 6) {
-            checkFallos();
+            checkInfo();
             echo "Has perdido :(\nLa frase era: " . $frases[$random];
             break;
             // Si las letras que ha encontrado el usuario coinciden con las letras de la frase, ha ganado.
